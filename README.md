@@ -1,4 +1,4 @@
-### bump-commit-message
+### git-bump-commit-message
 
 A simple Git helper that generate commit message when committing updated `go.mod` file after bumping one or more dependencies.
 
@@ -19,7 +19,7 @@ Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
 	modified:   go.mod
 	modified:   go.sum
-$ git commit -m "$(bump-commit-message)"
+$ git commit -m "$(git bump-commit-message)"
 ```
 
 The resulting commit message will be:
@@ -34,3 +34,11 @@ Date:   Wed Jan 8 13:07:50 2020 +0100
     * openshift/library-go@0b9c208d: build-machinery: Add human readable messages to go mod verify-deps
     * openshift/library-go@886b6c5c: config: default bind network to tcp instead of tcp4
 ```
+
+* In case the bump is happening in branch other than `master` you can specify the base branch via `--base-branch` flag.
+* In case you only want to list commits for specific paths, you can list the paths via `--paths` flag.
+
+License
+-------
+
+This helper is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
