@@ -103,7 +103,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/mfojtik/bump-commit-message/pkg/golang/internal/semver"
+	"github.com/mfojtik/git-bump-commit-message/pkg/golang/internal/semver"
 )
 
 // A Version (for clients, a module.Version) is defined by a module path and version pair.

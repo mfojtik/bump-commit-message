@@ -11,10 +11,11 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v28/github"
+	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 
-	"github.com/mfojtik/bump-commit-message/pkg/golang"
-	"github.com/mfojtik/bump-commit-message/pkg/resolve"
+	"github.com/mfojtik/git-bump-commit-message/pkg/golang"
+	"github.com/mfojtik/git-bump-commit-message/pkg/resolve"
 )
 
 type module struct {
@@ -59,7 +60,7 @@ func readModules(goModBytes []byte) ([]module, error) {
 	return result, nil
 }
 
-func compareModules(new, old []module) []module {
+func compareModules(new, old []module, filter []string) []module {
 	result := []module{}
 	for _, newModule := range new {
 		previousVersion := ""
@@ -74,6 +75,18 @@ func compareModules(new, old []module) []module {
 		}
 		if len(previousVersion) == 0 {
 			continue
+		}
+		if len(filter) > 0 {
+			matchFilter := false
+			for _, f := range filter {
+				if !strings.HasPrefix(newModule.name, f) {
+					matchFilter = true
+					break
+				}
+			}
+			if !matchFilter {
+				continue
+			}
 		}
 		result = append(result, module{
 			name:             newModule.name,
@@ -124,7 +137,25 @@ func getCommitFromVersion(version string) string {
 	return parts[2]
 }
 
-func main() {
+var (
+	filter     []string
+	baseBranch = "master"
+)
+
+func init() {
+	rootCmd.PersistentFlags().StringSliceVar(&filter, "paths", filter, "A comma separated list of import paths to include commit messages for")
+	rootCmd.PersistentFlags().StringVar(&baseBranch, "base-branch", baseBranch, "A branch name to use as a base when comparing the previous go.mod")
+}
+
+var rootCmd = &cobra.Command{
+	Use:   "git-bump-commit-message",
+	Short: "A commit message generator for go.mod bumps",
+	Run: func(cmd *cobra.Command, args []string) {
+		run(args)
+	},
+}
+
+func run(args []string) {
 	// we need Github token so we won't be rate-limited when interacting with github API
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	if len(githubToken) == 0 {
@@ -133,7 +164,7 @@ func main() {
 	githubClient := oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(&oauth2.Token{AccessToken: githubToken}))
 
 	// read the go.mod from upstream/master branch
-	upstreamModContent, err := exec.Command("git", "show", "upstream/master:go.mod").CombinedOutput()
+	upstreamModContent, err := exec.Command("git", "show", "upstream/"+baseBranch+":go.mod").CombinedOutput()
 	if err != nil {
 		log.Fatalf("Unable to read go.mod file from upstream/master branch: %v (%s)", err, string(upstreamModContent))
 	}
@@ -153,11 +184,13 @@ func main() {
 	}
 
 	// compare upstream/master and local and get list of modules that were changed in go.mod
-	updatedModules := compareModules(upstreamModules, currentModules)
+	updatedModules := compareModules(upstreamModules, currentModules, filter)
 
 	if len(updatedModules) == 0 {
 		log.Fatal("No modules were updated in this branch")
 	}
+
+	log.Printf("m: %#v", updatedModules)
 
 	fmt.Fprintf(os.Stdout, "bump(*): vendor update\n\n")
 	for _, m := range updatedModules {
@@ -170,4 +203,8 @@ func main() {
 		}
 	}
 	fmt.Fprintf(os.Stdout, "\n")
+}
+
+func main() {
+	rootCmd.Execute()
 }

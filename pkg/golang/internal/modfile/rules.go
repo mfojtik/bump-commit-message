@@ -14,8 +14,8 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/mfojtik/bump-commit-message/pkg/golang/internal/lazyregexp"
-	"github.com/mfojtik/bump-commit-message/pkg/golang/internal/module"
+	"github.com/mfojtik/git-bump-commit-message/pkg/golang/internal/lazyregexp"
+	"github.com/mfojtik/git-bump-commit-message/pkg/golang/internal/module"
 )
 
 // A File is the parsed, interpreted form of a go.mod file.
