@@ -8,6 +8,12 @@ Then it will read the local `go.mod` file and compare both to get list of module
 After that, it will list commits between current version and previous version and produce commit message content that lists all changes in all
 updated modules to standard output.
 
+### Install
+
+```
+go install github.com/mfojtik/git-bump-commit-message
+```
+
 ### Usage
 
 ```bash
