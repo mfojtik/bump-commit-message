@@ -190,8 +190,6 @@ func run(args []string) {
 		log.Fatal("No modules were updated in this branch")
 	}
 
-	log.Printf("m: %#v", updatedModules)
-
 	fmt.Fprintf(os.Stdout, "bump(*): vendor update\n\n")
 	for _, m := range updatedModules {
 		commitMessages, err := listCommits(m.name, getCommitFromVersion(m.previousRevision), getCommitFromVersion(m.currentRevision), githubClient)
