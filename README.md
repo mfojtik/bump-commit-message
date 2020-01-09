@@ -22,6 +22,7 @@ This is needed in order to list the commits for repositories that were updated i
 ```bash
 $ git checkout -b test-bump
 $ go get -u github.com/openshift/library-go
+$ git add .
 $ git status
 On branch test-bump
 Changes to be committed:
@@ -42,6 +43,8 @@ Date:   Wed Jan 8 13:07:50 2020 +0100
 
     * openshift/library-go@0b9c208d: build-machinery: Add human readable messages to go mod verify-deps
     * openshift/library-go@886b6c5c: config: default bind network to tcp instead of tcp4
+    ...
+    ...
 ```
 
 * In case the bump is happening in branch other than `master` you can specify the base branch via `--base-branch` flag.
