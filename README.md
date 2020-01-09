@@ -16,6 +16,9 @@ go install github.com/mfojtik/git-bump-commit-message
 
 ### Usage
 
+In order to use this helpers, you have to set the `GITHUB_TOKEN` environment variable to your personal Github access token.
+This is needed in order to list the commits for repositories that were updated in the bump change without being restricted by Github API request limits.
+
 ```bash
 $ git checkout -b test-bump
 $ go get -u github.com/openshift/library-go
