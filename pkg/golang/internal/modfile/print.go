@@ -158,7 +158,7 @@ func (p *printer) expr(x Expr) {
 		p.expr(&x.RParen)
 	}
 
-	// Queue end-of-line comments for printing when we
+	// queue end-of-line comments for printing when we
 	// reach the end of the line.
 	p.comment = append(p.comment, x.Comment().Suffix...)
 }

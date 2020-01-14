@@ -84,7 +84,7 @@ func compareModules(new, old []module, filter []string) []module {
 					break
 				}
 			}
-			if !matchFilter {
+			if matchFilter {
 				continue
 			}
 		}
@@ -130,7 +130,7 @@ func getCommitFromVersion(version string) string {
 	if len(parts) != 3 {
 		return version
 	}
-	return parts[2]
+	return strings.TrimSuffix(parts[2], "+incompatible")
 }
 
 var (
